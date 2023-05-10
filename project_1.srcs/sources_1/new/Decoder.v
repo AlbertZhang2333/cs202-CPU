@@ -21,14 +21,14 @@
 
 
 module Decoder(
+    input clk,
+    input reset,
     input[31:0] instruction,
     input[31:0] MemData,
     input[31:0] ALU_result,
     input RegWrite,
     input MemtoReg,
     input RegDst,
-    input clk,
-    input reset,
     input jal,
     input[31:0] pc, //pc+4
     output[31:0] read_data1,
