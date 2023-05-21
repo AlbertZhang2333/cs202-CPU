@@ -34,13 +34,20 @@ module IFetch(
     input Jal,
     input Jr,
     
+    input kickOff,
+    input uart_addr,
+    input uart_data,
+    input uart_clk,
+    input uart_write_en,    
     output[31:0] instruction
     );
     
-    prgrom instruction_memory(
-          .clka(clock),
-          .addra(pc[15:2]),
-          .douta(instruction)
+    programrom instruction_memory(
+          .clka(kickOff ? clock : uart_clk),
+          .addra(kickOff ? pc[15:2] : uart_addr),
+          .douta(instruction),
+          .dina(kickOff ? 32'b0 : uart_data),
+          .wea(kickOff ? 0 : uart_write_en)
           );
           
     reg[31:0] pc, next_pc;

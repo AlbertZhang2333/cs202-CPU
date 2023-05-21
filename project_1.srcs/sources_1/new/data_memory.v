@@ -23,14 +23,19 @@ module data_memory(
     input memWrite,
     input[31:0] address,
     input[31:0] writeData,
-    input[31:0]readData
+    output[31:0]readData,
+    input kickOff,
+    input uart_clk,
+    input uart_write_en,
+    input[13:0] uart_addr,
+    input[31:0] uart_data
     );
 wire clk;
 RAM data_memory(
-    .clka(clk), 
-    .wea(memWrite), 
-    .addra(address[15:2]),
-    .dina(writeData),
+    .clka(kickOff ? clk : uart_clk), 
+    .wea(kickOff ? memWrite : uart_write_en), 
+    .addra(kickOff ? address[15:2] : uart_addr),
+    .dina(kickOff ? writeData : uart_data),
     .douta(readData)
     );
 assign clk = !clock;

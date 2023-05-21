@@ -21,10 +21,13 @@
 
 
 module top(
-    input clk, //系统时钟
-    input rst,
+    input sys_clk, //系统时钟
+    input rst_in,
     input[23:0] switch,
-    output[23:0] led
+    output[23:0] led,
+    input start_pg,
+    input rx,
+    output tx
     );
     wire RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr;//控制信号
     wire [31:0] read_data1, read_data2;//寄存器的值， jr可能用($ra) read_data1
@@ -39,13 +42,23 @@ module top(
     wire[31:0] MemData; //Data read from Memory(or IO ?)
     wire[31:0]ALU_result;
     wire[31:0] data_address;
+    
+    wire uart_clk;
+    reg uart_rst, rx_reg, uart_write_en_reg;
+    wire spg_bufg, uart_clk_o, uart_write_en, uart_done, kickOff;
+    wire [14:0] uart_addr;
+    wire [31:0] uart_data;
+    
+    
     cpuclk clock1(
-        .clk_in1(clk),
-        .clk_out1(clock)
+        .clk_in1(sys_clk),
+        .clk_out1(clock),
+        .clk_out2(uart_clk)
     );
+    
     IFetch Ifetch(
         .clock(clock),
-        .reset(rst),
+        .reset(rst_in),
         .ALU_res(ALU_addr_res),
         .zero(zero),
         .read_data1(read_data1),
@@ -54,7 +67,12 @@ module top(
         .Jump(Jump),
         .Jal(Jal),
         .Jr(Jr),
-        .instruction(instruction)
+        .instruction(instruction),
+        .kickOff(kickOff),
+        .uart_clk(uart_clk_o),
+        .uart_write_en(uart_write_en & !uart_addr[13]), 
+        .uart_addr(uart_addr),
+        .uart_data(uart_data)
     );
     
     controller con(
@@ -77,7 +95,7 @@ module top(
     
     Decoder decoder(
         .clk(clock),
-        .reset(rst),
+        .reset(rst_in),
         .instruction(instruction),
         .MemData(MemData),
         .ALU_result(ALU_result),
@@ -96,6 +114,38 @@ module top(
         .memWrite(MemWrite),
         .address(data_address),
         .writeData(Mem_write_data),
-        .readData(MemData)
+        .readData(MemData),
+        .kickOff(kickOff),
+        .uart_clk(uart_clk),
+        .uart_write_en(uart_write_en & uart_addr[13]),
+        .uart_addr(uart_addr),
+        .uart_data(uart_data)
     );
+    
+    uart_bmpg_0 uart(
+            .upg_clk_i(uart_clk),
+            .upg_rst_i(uart_rst),
+            .upg_rx_i(rx),
+            .upg_clk_o(uart_clk_o),
+            .upg_wen_o(uart_write_en),
+            .upg_adr_o(uart_addr),
+            .upg_dat_o(uart_data),
+            .upg_done_o(uart_done),
+            .upg_tx_o(tx)
+        );
+        
+        BUFG U1(.I(start_pg), .O(spg_bufg));
+         always@(posedge sys_clk) begin
+            if(spg_bufg) uart_rst = 0;
+            if(rst_in) uart_rst = 1;
+            if (uart_rst) begin
+                rx_reg = 0;
+                uart_write_en_reg = 0;
+            end
+            else begin
+                if (!rx) rx_reg = 1;
+                if (uart_write_en) uart_write_en_reg = 1;
+            end
+          end
+          
 endmodule
