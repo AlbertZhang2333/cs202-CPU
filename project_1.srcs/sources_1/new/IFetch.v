@@ -23,23 +23,26 @@
 module IFetch(
     input clock,
     input reset,
-    input[31:0] ALU_res,//instruction number calculated by ALU. PC = ALU_res * 4
+    input[31:0] ALU_res,//instruction address calculated by ALU. PC = ALU_res * 4
     input zero,
     input read_data1, //read from register by decoder
     
     //from controller
     input Branch,
     input nBranch,
-    input Jump,
+    input Jmp,
     input Jal,
     input Jr,
     
     input kickOff,
+    input uart_rst,
     input uart_addr,
     input uart_data,
     input uart_clk,
     input uart_write_en,    
-    output[31:0] instruction
+    output[31:0] Instruction,
+    output[31:0] branch_base_addr,
+    output[31:0] link_addr
     );
     
     programrom instruction_memory(

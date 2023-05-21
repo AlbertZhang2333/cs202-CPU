@@ -4,5 +4,7 @@ Dec 15 2017
 21:07:18
 E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.sim/sim_1/behav/xsim/glbl.v,1513215259,verilog,,,,glbl,,,,,,,,
 E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sim_1/new/data_memory_sim.v,1681872882,verilog,,,,data_memory_sim,,,,,,,,
-E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/RAM/sim/RAM.v,1681786487,verilog,,E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/data_memory.v,,RAM,,,,,,,,
-E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/data_memory.v,1681868790,verilog,,E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sim_1/new/data_memory_sim.v,,data_memory,,,,,,,,
+E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sim_1/new/decoder_sim.v,1684660829,verilog,,,,decoder_sim,,,../../../../project_1.srcs/sources_1/ip/cpuclk,,,,,
+E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/RAM/sim/RAM.v,1681786487,verilog,,E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/data_memory.v,,RAM,,,../../../../project_1.srcs/sources_1/ip/cpuclk,,,,,
+E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/data_memory.v,1684574097,verilog,,E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sim_1/new/data_memory_sim.v,,data_memory,,,../../../../project_1.srcs/sources_1/ip/cpuclk,,,,,
+E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/decode32.v,1684651075,verilog,,E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sim_1/new/decoder_sim.v,,decode32,,,../../../../project_1.srcs/sources_1/ip/cpuclk,,,,,

@@ -21,7 +21,7 @@
 
 
 module top(
-    input sys_clk, //系统时钟
+    input sys_clk, 
     input rst_in,
     input[23:0] switch,
     output[23:0] led,
@@ -29,26 +29,30 @@ module top(
     input rx,
     output tx
     );
-    wire RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr;//控制信号
-    wire [31:0] read_data1, read_data2;//寄存器的值， jr可能用($ra) read_data1
+    wire RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
+    wire [31:0] read_data1, read_data2;//read data from register
     wire immediate; //immediate extend
-    wire [31:0] ALU_addr_res; // for Branch 见IFetch.v ALU_res
+    wire [31:0] ALU_addr_res; // for Branch  in IFetch.v called ALU_res
     wire [31:0] instruction;
     wire [31:0] branch_base_addr;// PC + 4
-    wire [31:0] link_addr;// for jal 给$ra寄存器保存的指令
+    wire [31:0] link_addr;// for jal jump to address in $ra
     wire [31:0] pc;
     wire clock; //circle
     wire[1:0] ALUOp;
     wire[31:0] MemData; //Data read from Memory(or IO ?)
     wire[31:0]ALU_result;
     wire[31:0] data_address;
-    
+    wire[31:0] reg_write_data;
+    wire[5:0] opcode;
+    assign opcode = instruction[31:26];
+    //assign reg_write_data = (opcode == 6'b10_0011) ? mem_io_read_val : 
+    //                    (opcode == 6'b00_0011) ? return_addr : result;
     wire uart_clk;
     reg uart_rst, rx_reg, uart_write_en_reg;
     wire spg_bufg, uart_clk_o, uart_write_en, uart_done, kickOff;
     wire [14:0] uart_addr;
     wire [31:0] uart_data;
-    
+    assign kickOff = uart_rst | (~uart_rst & uart_done);
     
     cpuclk clock1(
         .clk_in1(sys_clk),
@@ -64,20 +68,25 @@ module top(
         .read_data1(read_data1),
         .Branch(Branch),
         .nBranch(nBranch),
-        .Jump(Jump),
+        .Jump(Jmp),
         .Jal(Jal),
         .Jr(Jr),
-        .instruction(instruction),
+        .Instruction(instruction),
         .kickOff(kickOff),
         .uart_clk(uart_clk_o),
         .uart_write_en(uart_write_en & !uart_addr[13]), 
         .uart_addr(uart_addr),
-        .uart_data(uart_data)
+        .uart_data(uart_data),
+        .uart_rst(uart_rst),
+        .branch_base_addr(branch_base_addr),
+        .link_addr(link_addr)
     );
     
-    controller con(
-        .op(instruction[31:26]),
-        .function_code(instruction[5:0]),
+    wire[21:0] ALU_result_high;
+    assign ALU_result_high = ALU_result[31:10];
+    control32 controller(
+        .Opcode(instruction[31:26]),
+        .FUnction_opcode(instruction[5:0]),
         .RegDst(RegDst),
         .Branch(Branch),
         .nBranch(nBranch),
@@ -87,26 +96,30 @@ module top(
         .MemWrite(MemWrite),
         .ALUSrc(ALUSrc),
         .RegWrite(RegWrite),
-        .Jump(Jump),
+        .Jmp(Jump),
         .Jal(Jal),
         .Jr(Jr),
-        .I_format(I_format)
+        .I_format(I_format),
+        .Sftmd(Sftmd),
+        .ALU_result_high(ALU_result_high),
+        .IORead(IORead),
+        .IOWrite(IOWrite)
     );
     
     decode32 decoder(
-        .clk(clock),
+        .clock(clock),
         .reset(rst_in),
-        .instruction(instruction),
-        .MemData(MemData),
+        .Instruction(instruction),
+        .mem_data(reg_write_data),
         .ALU_result(ALU_result),
         .RegWrite(RegWrite),
         .MemtoReg(MemtoReg),
         .RegDst(RegDst),
-        .jal(Jal),
-        .pc(pc),
-        .read_data1(read_data1),
-        .read_data2(read_data2),
-        .immediate(immediate)
+        .Jal(Jal),
+        .opcplus4(pc),
+        .read_data_1(read_data1),
+        .read_data_2(read_data2),
+        .Sign_extend(immediate)
     );
     wire[31:0] Mem_write_data;
     data_memory dmemery(
