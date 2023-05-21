@@ -93,7 +93,7 @@ module top(
         .I_format(I_format)
     );
     
-    Decoder decoder(
+    decode32 decoder(
         .clk(clock),
         .reset(rst_in),
         .instruction(instruction),
