@@ -74,8 +74,8 @@ module top(
         .Instruction(instruction),
         .kickOff(kickOff),
         .uart_clk(uart_clk_o),
-        .uart_write_en(uart_write_en & !uart_addr[13]), 
-        .uart_addr(uart_addr),
+        .uart_write_en(uart_write_en & !uart_addr[14]), 
+        .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data),
         .uart_rst(uart_rst),
         .branch_base_addr(branch_base_addr),
@@ -122,7 +122,7 @@ module top(
         .Sign_extend(immediate)
     );
     wire[31:0] Mem_write_data;
-    data_memory dmemery(
+    dmemory32 dmemory(
         .clock(clock),
         .memWrite(MemWrite),
         .address(data_address),
@@ -130,8 +130,8 @@ module top(
         .readData(MemData),
         .kickOff(kickOff),
         .uart_clk(uart_clk),
-        .uart_write_en(uart_write_en & uart_addr[13]),
-        .uart_addr(uart_addr),
+        .uart_write_en(uart_write_en & uart_addr[14]),
+        .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data)
     );
     
@@ -159,6 +159,6 @@ module top(
                 if (!rx) rx_reg = 1;
                 if (uart_write_en) uart_write_en_reg = 1;
             end
-          end
+        end
           
 endmodule

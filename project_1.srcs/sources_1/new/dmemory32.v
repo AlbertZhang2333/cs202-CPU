@@ -18,7 +18,7 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-module data_memory(
+module dmemory32(
     input clock,
     input memWrite,
     input[31:0] address,
