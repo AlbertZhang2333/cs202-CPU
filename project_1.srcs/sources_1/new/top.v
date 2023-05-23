@@ -91,8 +91,8 @@ module top(
     assign ALU_result_high = ALU_result[31:10];
     control32 controller(
         .Opcode(instruction[31:26]),
-        .FUnction_opcode(instruction[5:0]),
-        .RegDst(RegDst),
+        .Function_opcode(instruction[5:0]),
+        .RegDST(RegDst),
         .Branch(Branch),
         .nBranch(nBranch),
         .MemRead(MemRead),
