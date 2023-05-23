@@ -161,6 +161,15 @@ module top(
         .ledout(led)
     );
 
+    wire[1:0] SwitchCtrl = {SwitchCtrlHigh,SwitchCtrlLow};
+    switches Switch(
+        .reset(rst_in),
+        .ior(IORead),
+        .switchctrl(SwitchCtrl),
+        .ioread_data_switch(switch),
+        .ioread_data(switch_wdata)
+    );
+
     wire[31:0] Mem_write_data;
     dmemory32 dmemory(
         .clock(clock),
