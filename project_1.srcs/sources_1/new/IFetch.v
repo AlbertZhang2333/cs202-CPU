@@ -56,22 +56,17 @@ module IFetch(
     reg[31:0] pc, next_pc;
     //get next pc
     always @(*) begin
-        //jr 直接从$ra中读取指令地址
-        if(Jr == 1'b1) begin
-            next_pc <= read_data1;
-        end
-        //when condition of branch is true, set next pc as the ALU result
-        else if(((Branch == 1'b1) && (zero == 1'b1)) || ((nBranch == 1'b1) && (zero == 1'b0))) begin
-            next_pc <= ALU_res;
-        end
-        else begin
-            next_pc <= pc + 4;
-        end
+         //Jump and Jal 跳转方法， Jal还要更新$ra的值（在decoder中更新？）
+        if(((Branch == 1) && (Zero == 1 )) || ((nBranch == 1) && (Zero == 0))) 
+            next_pc = Addr_result << 2; 
+        else if(Jr == 1) next_pc = Read_data_1 << 2; //jr 直接从$ra中读取指令地址
+        else if ((Jmp == 1) || (Jal == 1)) next_pc = {pc[31:28], Instruction[25:0], 2'b00};
+        else next_pc = pc + 4; 
     end
     
-    always @Jal begin
-        if(Jal == 1)begin
-            link_addr = pc + 4;
+    always @(negedge clock) begin
+        if(Jal == 1 || Jmp == 1)begin
+            link_addr <= (pc + 4) >> 2;
         end
     end
 
@@ -80,14 +75,8 @@ module IFetch(
             pc <= 32'h0000_0000;
         end
         else begin
-        //Jump and Jal 跳转方法， Jal还要更新$ra的值（在decoder中更新？）
-            if((Jmp == 1'b1)|| (Jal == 1'b1)) begin
-                pc <= {4'b0000, Instruction[25:0],2'b00};
-            end
-            else begin
-                pc <= next_pc;
-            end
-         end
+            pc <= next_pc;
+        end
       end
     
     assign branch_base_addr = pc + 4;

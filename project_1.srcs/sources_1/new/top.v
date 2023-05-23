@@ -52,6 +52,11 @@ module top(
     wire spg_bufg, uart_clk_o, uart_write_en, uart_done, kickOff;
     wire [14:0] uart_addr;
     wire [31:0] uart_data;
+    wire[15:0] switch_wdata;
+    wire[23:0] led_rout;
+    wire[15:0] key_wdata;
+    wire LEDCtrlHigh, LEDCtrlLow, SwitchCtrlLow, SwitchCtrlHigh,  SegCtrl, BoardCtrl;
+
     assign kickOff = uart_rst | (~uart_rst & uart_done);
     
     cpuclk clock1(
@@ -116,11 +121,33 @@ module top(
         .MemtoReg(MemtoReg),
         .RegDst(RegDst),
         .Jal(Jal),
-        .opcplus4(pc),
+        .opcplus4(link_addr),
         .read_data_1(read_data1),
         .read_data_2(read_data2),
         .Sign_extend(immediate)
     );
+
+    MemOrIO morio(
+        .memRead(MemRead),
+        .memWrite(MemWrite),
+        .ioRead(IORead),
+        .ioWrite(IOWrite),
+        .addr_in(ALU_result),
+        .addr_out(data_address),
+        .m_rdata(memData),
+        .io_rdata_switch(switch_wdata),
+        .io_rdata_board(key_wdata),
+        .r_wdata(reg_write_data),
+        .r_rdata(read_data2),
+        .write_data(Mem_write_data),
+        .LEDCtrlLow(LEDCtrlLow),
+        .LEDCtrlHigh(LEDCtrlHigh),
+        .SwitchCtrlLow(SwitchCtrlLow),
+        .SwitchCtrlHigh(SwitchCtrlHigh),
+        .SegCtrl(SegCtrl),
+        .BoardCtrl(BoardCtrl)
+    );
+
     wire[31:0] Mem_write_data;
     dmemory32 dmemory(
         .clock(clock),
