@@ -148,6 +148,19 @@ module top(
         .BoardCtrl(BoardCtrl)
     );
 
+    wire ledCS = LEDCtrlLow | LEDCtrlHigh;
+    wire ledAddr = {LEDCtrlHigh,LEDCtrlLow};
+    wire ledWData = Mem_write_data[15:0];
+    leds LED(
+        .ledrst(rst_in),
+        .led_clk(clock),
+        .ledwrite(IOWrite),
+        .ledcs(ledCS),
+        .ledaddr(ledAddr),
+        .ledwdata(ledWData),
+        .ledout(led)
+    );
+
     wire[31:0] Mem_write_data;
     dmemory32 dmemory(
         .clock(clock),
@@ -161,7 +174,7 @@ module top(
         .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data)
     );
-    
+
     uart_bmpg_0 uart(
             .upg_clk_i(uart_clk),
             .upg_rst_i(uart_rst),
