@@ -27,7 +27,7 @@ module leds (
             end 
         else 
             begin
-                ledout <= ledout;
+                ledout <= 24'h000000;
             end
     end
 	
