@@ -73,7 +73,7 @@ module top(
         .read_data1(read_data1),
         .Branch(Branch),
         .nBranch(nBranch),
-        .Jump(Jmp),
+        .Jmp(Jump),
         .Jal(Jal),
         .Jr(Jr),
         .Instruction(instruction),
