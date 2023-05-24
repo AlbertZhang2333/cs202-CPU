@@ -73,7 +73,7 @@ module top(
         .read_data1(read_data1),
         .Branch(Branch),
         .nBranch(nBranch),
-        .Jump(Jmp),
+        .Jmp(Jump),
         .Jal(Jal),
         .Jr(Jr),
         .Instruction(instruction),
@@ -91,8 +91,8 @@ module top(
     assign ALU_result_high = ALU_result[31:10];
     control32 controller(
         .Opcode(instruction[31:26]),
-        .FUnction_opcode(instruction[5:0]),
-        .RegDst(RegDst),
+        .Function_opcode(instruction[5:0]),
+        .RegDST(RegDst),
         .Branch(Branch),
         .nBranch(nBranch),
         .MemRead(MemRead),
@@ -148,6 +148,28 @@ module top(
         .BoardCtrl(BoardCtrl)
     );
 
+    wire ledCS = LEDCtrlLow | LEDCtrlHigh;
+    wire ledAddr = {LEDCtrlHigh,LEDCtrlLow};
+    wire ledWData = Mem_write_data[15:0];
+    leds LED(
+        .ledrst(rst_in),
+        .led_clk(clock),
+        .ledwrite(IOWrite),
+        .ledcs(ledCS),
+        .ledaddr(ledAddr),
+        .ledwdata(ledWData),
+        .ledout(led)
+    );
+
+    wire[1:0] SwitchCtrl = {SwitchCtrlHigh,SwitchCtrlLow};
+    switches Switch(
+        .reset(rst_in),
+        .ior(IORead),
+        .switchctrl(SwitchCtrl),
+        .ioread_data_switch(switch),
+        .ioread_data(switch_wdata)
+    );
+
     wire[31:0] Mem_write_data;
     dmemory32 dmemory(
         .clock(clock),
@@ -161,7 +183,7 @@ module top(
         .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data)
     );
-    
+
     uart_bmpg_0 uart(
             .upg_clk_i(uart_clk),
             .upg_rst_i(uart_rst),

@@ -56,10 +56,10 @@ module IFetch(
     reg[31:0] pc, next_pc;
     //get next pc
     always @(*) begin
-         //Jump and Jal Ìø×ª·½·¨£¬ Jal»¹Òª¸üÐÂ$raµÄÖµ£¨ÔÚdecoderÖÐ¸üÐÂ£¿£©
-        if(((Branch == 1) && (Zero == 1 )) || ((nBranch == 1) && (Zero == 0))) 
-            next_pc = Addr_result << 2; 
-        else if(Jr == 1) next_pc = Read_data_1 << 2; //jr Ö±½Ó´Ó$raÖÐ¶ÁÈ¡Ö¸ÁîµØÖ·
+         //Jump and Jal ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Jalï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½$raï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½decoderï¿½Ð¸ï¿½ï¿½Â£ï¿½ï¿½ï¿½
+        if(((Branch == 1) && (zero == 1 )) || ((nBranch == 1) && (zero == 0))) 
+            next_pc = ALU_res << 2; 
+        else if(Jr == 1) next_pc = read_data1 << 2; //jr Ö±ï¿½Ó´ï¿½$raï¿½Ð¶ï¿½È¡Ö¸ï¿½ï¿½ï¿½Ö·
         else if ((Jmp == 1) || (Jal == 1)) next_pc = {pc[31:28], Instruction[25:0], 2'b00};
         else next_pc = pc + 4; 
     end
