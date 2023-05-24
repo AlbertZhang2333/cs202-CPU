@@ -150,21 +150,21 @@ module top(
 
     wire ledCS = LEDCtrlLow | LEDCtrlHigh;
     wire ledAddr = {LEDCtrlHigh,LEDCtrlLow};
-    wire ledWData = Mem_write_data[15:0];
     leds LED(
         .ledrst(rst_in),
         .led_clk(clock),
         .ledwrite(IOWrite),
         .ledcs(ledCS),
         .ledaddr(ledAddr),
-        .ledwdata(ledWData),
+        .ledwdata(Mem_write_data),
         .ledout(led)
     );
 
     wire[1:0] SwitchCtrl = {SwitchCtrlHigh,SwitchCtrlLow};
+    wire SwitchCS = SwitchCtrlLow | SwitchCtrlHigh; //means data from switch, not board
     switches Switch(
         .reset(rst_in),
-        .ior(IORead),
+        .ior(SwitchCS),
         .switchctrl(SwitchCtrl),
         .ioread_data_switch(switch),
         .ioread_data(switch_wdata)

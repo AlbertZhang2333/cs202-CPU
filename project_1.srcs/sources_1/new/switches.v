@@ -3,7 +3,7 @@
 
 module switches (
     input			reset,				// reset, active high 
-	input			ior,				// from Controller, 1 means read from switches
+	input			ior,				// from MenOrIO, 1 means read from switches
     input	[1:0]	switchctrl,			// means the switch is selected as input device (CS signal from MemOrIO)
     input	[23:0]	ioread_data_switch,	// the data from switches
     output	[15:0]	ioread_data 		// the data to memorio
