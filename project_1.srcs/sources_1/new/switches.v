@@ -18,7 +18,7 @@ module switches (
                 if (switchctrl == 2'b01)
                     ioread_data = ioread_data_switch[15:0];
                 else if (switchctrl == 2'b10)
-                    ioread_data = {ioread_data[15:8],ioread_data_switch[23:16]};
+                    ioread_data = {8'h00,ioread_data_switch[23:16]};
                 else
                     ioread_data = ioread_data;
             end
