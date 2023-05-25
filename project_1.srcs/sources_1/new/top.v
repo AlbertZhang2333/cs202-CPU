@@ -77,6 +77,7 @@ module top(
         .Branch(Branch),
         .nBranch(nBranch),
         .Jmp(Jump),
+        .Jmp(Jump),
         .Jal(Jal),
         .Jr(Jr),
         .Instruction(instruction),
@@ -94,6 +95,8 @@ module top(
     assign ALU_result_high = ALU_result[31:10];
     control32 controller(
         .Opcode(instruction[31:26]),
+        .Function_opcode(instruction[5:0]),
+        .RegDST(RegDst),
         .Function_opcode(instruction[5:0]),
         .RegDST(RegDst),
         .Branch(Branch),
@@ -177,6 +180,7 @@ module top(
         .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data)
     );
+
 
     uart_bmpg_0 uart(
             .upg_clk_i(uart_clk),
