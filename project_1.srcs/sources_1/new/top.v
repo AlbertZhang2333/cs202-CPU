@@ -24,9 +24,9 @@ module top(
     input           sys_clk, 
     input           rst_in,
     input   [18:0]  switch,
-    output  [18:0]  led,
     input           start_pg,
     input           rx,
+    output  [18:0]  led,
     output          tx
     );
 
@@ -76,7 +76,6 @@ module top(
         .read_data1(read_data1),
         .Branch(Branch),
         .nBranch(nBranch),
-        .Jmp(Jump),
         .Jmp(Jump),
         .Jal(Jal),
         .Jr(Jr),
@@ -151,6 +150,24 @@ module top(
         .SwitchCtrl(SwitchCtrl),
         .SegCtrl(SegCtrl),
         .BoardCtrl(BoardCtrl)
+    );
+
+    executs32 alu(
+        .Read_data_1(read_data1),
+        .Read_data_2(read_data2),
+        .Sign_extend(immediate),
+        .Function_opcode(instruction[5:0]),
+        .Exe_opcode(instruction[31:26]),
+        .ALUOp(ALUOp),
+        .Shamt(instrucion[10:6]),
+        .Sftmd(Sftmd),
+        .ALUSrc(ALUSrc),
+        .I_format(I_format),
+        .Jr(Jr),
+        .Zero(zero),
+        .ALU_Result(ALU_reult),
+        .Addr_Result(ALU_addr_res),
+        .PC_plus_4(branch_base_addr)
     );
 
     leds LED(
