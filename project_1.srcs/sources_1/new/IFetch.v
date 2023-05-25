@@ -39,7 +39,9 @@ module IFetch(
     input uart_addr,
     input uart_data,
     input uart_clk,
-    input uart_write_en,    
+    input uart_write_en, 
+    /* input send,
+    output reg syscall,  */  
     output[31:0] Instruction,
     output[31:0] branch_base_addr,
     output reg[31:0] link_addr //pc + 4
@@ -56,24 +58,33 @@ module IFetch(
     reg[31:0] pc, next_pc;
     //get next pc
     always @(*) begin
-         //Jump and Jal 跳转方法， Jal还要更新$ra的值（在decoder中更新？）
+         //Jump and Jal 
         if(((Branch == 1) && (Zero == 1 )) || ((nBranch == 1) && (Zero == 0))) 
-            next_pc = Addr_result << 2; 
-        else if(Jr == 1) next_pc = Read_data_1 << 2; //jr 直接从$ra中读取指令地址
-        else if ((Jmp == 1) || (Jal == 1)) next_pc = {pc[31:28], Instruction[25:0], 2'b00};
-        else next_pc = pc + 4; 
+            next_pc <= ALU_res; 
+        else if(Jr == 1) next_pc <= read_data1; //jr 
+        else if ((Jmp == 1) || (Jal == 1)) next_pc <= {4'b0000,Instruction[25:0],2'b00};//{pc[31:28], Instruction[25:0], 2'b00};
+        else next_pc <= pc + 4; 
     end
     
     always @(negedge clock) begin
         if(Jal == 1 || Jmp == 1)begin
-            link_addr <= (pc + 4) >> 2;
+            link_addr <= (pc + 4);
         end
     end
+
+    /* always @(negedge send) begin
+        pc <= next_pc;
+        syscall <= 1'b0;
+    end */
 
     always @(negedge clock) begin
         if(reset == 1'b1) begin
             pc <= 32'h0000_0000;
         end
+        /* else if(Instruction == 32'h0000000C)begin
+            pc <= pc;
+            syscall <= 1'b1;
+        end */
         else begin
             pc <= next_pc;
         end

@@ -21,41 +21,44 @@
 
 
 module top(
-    input sys_clk, 
-    input rst_in,
-    input[23:0] switch,
-    output[23:0] led,
-    input start_pg,
-    input rx,
-    output tx
+    input           sys_clk, 
+    input           rst_in,
+    input   [18:0]  switch,
+    output  [18:0]  led,
+    input           start_pg,
+    input           rx,
+    output          tx
     );
-    wire RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
-    wire [31:0] read_data1, read_data2;//read data from register
-    wire immediate; //immediate extend
-    wire [31:0] ALU_addr_res; // for Branch  in IFetch.v called ALU_res
-    wire [31:0] instruction;
-    wire [31:0] branch_base_addr;// PC + 4
-    wire [31:0] link_addr;// for jal jump to address in $ra
-    wire [31:0] pc;
-    wire clock; //circle
-    wire[1:0] ALUOp;
-    wire[31:0] MemData; //Data read from Memory(or IO ?)
-    wire[31:0]ALU_result;
-    wire[31:0] data_address;
-    wire[31:0] reg_write_data;
-    wire[5:0] opcode;
+
+    wire            RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
+    wire    [31:0]  read_data1, read_data2;//read data from register
+    wire            immediate; //immediate extend
+    wire    [31:0]  ALU_addr_res; // for Branch  in IFetch.v called ALU_res
+    wire    [31:0]  instruction;
+    wire    [31:0]  branch_base_addr;// PC + 4
+    wire    [31:0]  link_addr;// for jal jump to address in $ra
+    wire    [31:0]  pc;
+    wire            clock; //circle
+    wire    [1:0]   ALUOp;
+    wire    [31:0]  MemData; //Data read from Memory(or IO ?)
+    wire    [31:0]  ALU_result;
+    wire    [31:0]  data_address;
+    wire    [31:0]  reg_write_data;
+    wire    [5:0]   opcode;
+
     assign opcode = instruction[31:26];
     //assign reg_write_data = (opcode == 6'b10_0011) ? mem_io_read_val : 
     //                    (opcode == 6'b00_0011) ? return_addr : result;
-    wire uart_clk;
-    reg uart_rst, rx_reg, uart_write_en_reg;
-    wire spg_bufg, uart_clk_o, uart_write_en, uart_done, kickOff;
-    wire [14:0] uart_addr;
-    wire [31:0] uart_data;
-    wire[15:0] switch_wdata;
-    wire[23:0] led_rout;
-    wire[15:0] key_wdata;
-    wire LEDCtrlHigh, LEDCtrlLow, SwitchCtrlLow, SwitchCtrlHigh,  SegCtrl, BoardCtrl;
+
+    wire            uart_clk;
+    reg             uart_rst, rx_reg, uart_write_en_reg;
+    wire            spg_bufg, uart_clk_o, uart_write_en, uart_done, kickOff;
+    wire    [14:0]  uart_addr;
+    wire    [31:0]  uart_data;
+    wire    [18:0]  switch_wdata;
+    wire    [23:0]  led_rout;
+    wire    [18:0]  key_wdata;
+    wire            LEDCtrl, SwitchCtrl, SegCtrl, BoardCtrl;
 
     assign kickOff = uart_rst | (~uart_rst & uart_done);
     
@@ -73,7 +76,7 @@ module top(
         .read_data1(read_data1),
         .Branch(Branch),
         .nBranch(nBranch),
-        .Jump(Jmp),
+        .Jmp(Jump),
         .Jal(Jal),
         .Jr(Jr),
         .Instruction(instruction),
@@ -91,8 +94,8 @@ module top(
     assign ALU_result_high = ALU_result[31:10];
     control32 controller(
         .Opcode(instruction[31:26]),
-        .FUnction_opcode(instruction[5:0]),
-        .RegDst(RegDst),
+        .Function_opcode(instruction[5:0]),
+        .RegDST(RegDst),
         .Branch(Branch),
         .nBranch(nBranch),
         .MemRead(MemRead),
@@ -127,6 +130,7 @@ module top(
         .Sign_extend(immediate)
     );
 
+    wire[31:0] Mem_write_data;
     MemOrIO morio(
         .memRead(MemRead),
         .memWrite(MemWrite),
@@ -140,15 +144,27 @@ module top(
         .r_wdata(reg_write_data),
         .r_rdata(read_data2),
         .write_data(Mem_write_data),
-        .LEDCtrlLow(LEDCtrlLow),
-        .LEDCtrlHigh(LEDCtrlHigh),
-        .SwitchCtrlLow(SwitchCtrlLow),
-        .SwitchCtrlHigh(SwitchCtrlHigh),
+        .LEDCtrl(LEDCtrl),
+        .SwitchCtrl(SwitchCtrl),
         .SegCtrl(SegCtrl),
         .BoardCtrl(BoardCtrl)
     );
 
-    wire[31:0] Mem_write_data;
+    leds LED(
+        .ledrst(rst_in),
+        .led_clk(clock),
+        .ledcs(LEDCtrl),
+        .ledwdata(Mem_write_data),
+        .ledout(led)
+    );
+
+    switches Switch(
+        .reset(rst_in),
+        .switchctrl(SwitchCtrl),
+        .ioread_data_switch(switch),
+        .ioread_data(switch_wdata)
+    );
+
     dmemory32 dmemory(
         .clock(clock),
         .memWrite(MemWrite),
@@ -161,7 +177,7 @@ module top(
         .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data)
     );
-    
+
     uart_bmpg_0 uart(
             .upg_clk_i(uart_clk),
             .upg_rst_i(uart_rst),
