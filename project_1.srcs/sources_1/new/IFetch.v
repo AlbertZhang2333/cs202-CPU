@@ -47,8 +47,9 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
     output[31:0] Instruction;
     output[31:0] branch_base_addr;
     output reg[31:0] link_addr; //pc + 4
+    wire rom_clk = !clock;
     programrom instruction_memory(
-          .clka(kickOff ? clock : uart_clk),
+          .clka(kickOff ? rom_clk : uart_clk),
           .addra(kickOff ? pc[15:2] : uart_addr),
           .douta(Instruction),
           .dina(kickOff ? 32'h00000000 : uart_data),
@@ -58,18 +59,12 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
     reg[31:0] pc, next_pc;
     //get next pc
     always @(*) begin
+        if(Jr == 1) 
+        next_pc <= read_data1; //jr 
          //Jump and Jal 
-        if(((Branch == 1) && (zero == 1 )) || ((nBranch == 1) && (zero == 0))) 
-            next_pc <= ALU_res << 2; 
-        else if(Jr == 1) next_pc <= read_data1 << 2; //jr 
-        else if ((Jmp == 1) || (Jal == 1)) next_pc <= {4'b0000,Instruction[25:0],2'b00};//{pc[31:28], Instruction[25:0], 2'b00};
+        else if(((Branch == 1) && (zero == 1'b1)) || ((nBranch == 1'b1) && (zero == 1'b0))) 
+            next_pc <= ALU_res; 
         else next_pc <= pc + 4; 
-    end
-    
-    always @(negedge clock) begin
-        if(Jal == 1 || Jmp == 1)begin
-            link_addr <= (pc + 4) >> 2;
-        end
     end
 
     /* always @(negedge send) begin
@@ -86,6 +81,12 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
             syscall <= 1'b1;
         end */
         else begin
+            if ((Jmp == 1'b1) || (Jal == 1'b1)) 
+            begin
+                link_addr <= next_pc;
+                pc <= {pc[31:28], Instruction[25:0], 2'b00};
+            end
+            else
             pc <= next_pc;
         end
       end

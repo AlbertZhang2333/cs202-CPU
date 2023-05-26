@@ -1,7 +1,10 @@
 # Clock & Reset
 set_property PACKAGE_PIN Y18 [get_ports sys_clk]
 set_property PACKAGE_PIN P20 [get_ports rst_in]
-
+set_property PACKAGE_PIN E22 [get_ports UARTMood]
+set_property PACKAGE_PIN A21 [get_ports CPUMood]
+set_property IOSTANDARD LVCMOS33 [get_ports UARTMood]
+set_property IOSTANDARD LVCMOS33 [get_ports CPUMood]
 # UART
 set_property PACKAGE_PIN P4 [get_ports start_pg]
 set_property PACKAGE_PIN Y19 [get_ports rx]

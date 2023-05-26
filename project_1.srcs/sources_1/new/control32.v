@@ -54,14 +54,14 @@ assign Jal = (Opcode==6'b000011) ? 1'b1 : 1'b0;
 assign Branch = (Opcode==6'b000100) ? 1'b1 : 1'b0;
 assign nBranch = (Opcode==6'b000101) ? 1'b1 : 1'b0;
 assign RegDST = R_format;
-assign MemtoReg = Lw;
+assign MemtoReg = IORead || MemRead;
 assign RegWrite = (R_format || Lw || Jal || I_format) && !(Jr);
-assign MemWrite = Sw;
+assign MemWrite = ((Sw == 1) && (ALU_result_high != 22'h3FFFFF)) ? 1'b1 : 1'b0;
 assign I_format = (Opcode[5:3]==3'b001) ? 1'b1:1'b0;
 assign ALUSrc = (I_format || Lw || Sw) ? 1'b1 : 1'b0;
 assign ALUOp = {(R_format || I_format),(Branch || nBranch)};
 assign Sftmd = (((Function_opcode==6'b000000) || (Function_opcode==6'b000010) || (Function_opcode==6'b000011) || (Function_opcode==6'b000100) || (Function_opcode==6'b000110) || (Function_opcode==6'b000111)) && R_format)? 1'b1:1'b0;
-assign MemRead = ((Lw == 1) && (ALU_result_high != 22'h3FFFFF)) ? 1'b1 : 1'b0; //ALU_result作为memory地址若高位全�?1即大于等于FFFFFC000则为从IO读取数据
+assign MemRead = ((Lw == 1) && (ALU_result_high != 22'h3FFFFF)) ? 1'b1 : 1'b0; //ALU_result作为memory地址若高位全�?1即大于等于FFFFFC000则为从IO读取数据
 assign IORead = ((Lw == 1) && (ALU_result_high == 22'h3FFFFF)) ? 1'b1 : 1'b0;
 assign IOWrite = ((Sw == 1) && (ALU_result_high == 22'h3FFFFF)) ? 1'b1 : 1'b0;
 endmodule

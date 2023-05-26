@@ -17,7 +17,7 @@ input   [18:0]  io_rdata_switch; // data read from switch,19 bits
 input   [18:0]  io_rdata_board; // data read from board,19 bits
 output  [31:0]  r_wdata; // data to register
 input   [31:0]  r_rdata; // data read from register
-output  [31:0]  write_data; // data to memory or I/O（m_wdata, io_wdata�?
+output reg  [31:0]  write_data; // data to memory or I/O（m_wdata, io_wdata�?
 output          LEDCtrl; // LED Chip Select
 output          SwitchCtrl; // Switch Chip Select
 output          SegCtrl;//segment
@@ -25,26 +25,24 @@ output          BoardCtrl;//keyboard
 wire    [18:0]  io_rdata;
 wire    [1:0]   low_addr;
 assign low_addr = addr_in[1:0];
-assign io_rdata=(low_addr==2'b11)?io_rdata_board:io_rdata_switch;
+assign io_rdata=(low_addr==2'b01)?io_rdata_board:io_rdata_switch;
 
 assign addr_out = addr_in;
 
-assign r_wdata = (memRead==1'b1) ? m_rdata : {13'b0,io_rdata};
+assign r_wdata = (ioRead==1'b1) ? {13'b0,io_rdata} : m_rdata;
 
 assign LEDCtrl = (ioWrite == 1 && low_addr == 2'b00) ? 1'b1 : 1'b0;
 assign SwitchCtrl = (ioRead == 1 && low_addr == 2'b00) ? 1'b1 : 1'b0;
 assign SegCtrl = (ioWrite == 1 && low_addr == 2'b01) ? 1'b1 : 1'b0;
 assign BoardCtrl = (ioRead == 1 && low_addr == 2'b01) ? 1'b1 : 1'b0;
 
-reg     [31:0]   write_data_reg;
 always @* begin
     if ((memWrite == 1) || (ioWrite == 1)) begin
-        write_data_reg = r_rdata;
+        write_data = memRead ? m_rdata : r_rdata;
     end
     else begin
-        write_data_reg = 32'hFFFFFFFF;
+        write_data = 32'hZZZZZZZZ;
     end
 end
-assign write_data = write_data_reg;
 
 endmodule

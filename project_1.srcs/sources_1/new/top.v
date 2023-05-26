@@ -27,7 +27,9 @@ module top(
     input           start_pg,
     input           rx,
     output  [18:0]  led,
-    output          tx
+    output          tx,
+    output reg     CPUMood,
+    output reg     UARTMood
     );
 
     wire            RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
@@ -82,7 +84,7 @@ module top(
         .Instruction(instruction),
         .kickOff(kickOff),
         .uart_clk(uart_clk_o),
-        .uart_write_en(uart_write_en & !uart_addr[14]), 
+        .uart_write_en(uart_write_en & !uart_addr[14]),  //uart_write_en & uart_addr[14]
         .uart_addr(uart_addr[13:0]),
         .uart_data(uart_data),
         .uart_rst(uart_rst),
@@ -136,7 +138,7 @@ module top(
         .memWrite(MemWrite),
         .ioRead(IORead),
         .ioWrite(IOWrite),
-        .addr_in(ALU_result),
+        .addr_in(ALU_addr_res),
         .addr_out(data_address),
         .m_rdata(MemData),
         .io_rdata_switch(switch_wdata),
@@ -211,18 +213,35 @@ module top(
             .upg_tx_o(tx)
         );
         
-        BUFG U1(.I(start_pg), .O(spg_bufg));
+    reg spg_bufg = 0;
+    always @(start_pg) begin
+        if (rst_in) spg_bufg <= 0;
+        else spg_bufg <= ~spg_bufg;
+    end
+        //BUFG U1(.I(start_pg), .O(spg_bufg));
          always@(posedge sys_clk) begin
             if(spg_bufg) uart_rst = 0;
             if(rst_in) uart_rst = 1;
-            if (uart_rst) begin
+            /* if (uart_rst) begin
                 rx_reg = 0;
                 uart_write_en_reg = 0;
             end
             else begin
                 if (!rx) rx_reg = 1;
                 if (uart_write_en) uart_write_en_reg = 1;
-            end
+            end */
         end
+       always @(posedge sys_clk) begin
+        if(spg_bufg) begin
+            CPUMood <= 1'b0;
+            UARTMood <= 1'b1;
+        end
+        if(rst_in) begin
+            CPUMood <= 1'b1;
+            UARTMood <= 1'b0;
+  
+        end
+        
+    end
           
 endmodule

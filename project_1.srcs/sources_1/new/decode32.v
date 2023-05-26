@@ -89,11 +89,9 @@ module decode32(
         /* if(syscall == 1) writeDst <= 5'b00100;
         else  */
         if(RegWrite == 1'b1)begin
-             if(opcode == 6'b000011)begin
-                 if(Jal == 1'b1)begin
+             if(Jal == 1'b1)begin
                      writeDst <= 5'b11111;//jal
-                 end
-             end
+            end
              else if(RegDst==1'b1)begin
                  writeDst <= rd;
              end
