@@ -32,7 +32,7 @@ module top(
 
     wire            RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
     wire    [31:0]  read_data1, read_data2;//read data from register
-    wire            immediate; //immediate extend
+    wire    [31:0]  immediate; //immediate extend
     wire    [31:0]  ALU_addr_res; // for Branch  in IFetch.v called ALU_res
     wire    [31:0]  instruction;
     wire    [31:0]  branch_base_addr;// PC + 4
@@ -59,9 +59,9 @@ module top(
     wire    [23:0]  led_rout;
     wire    [18:0]  key_wdata;
     wire            LEDCtrl, SwitchCtrl, SegCtrl, BoardCtrl;
-
+    wire            rst_nu;
     assign kickOff = uart_rst | (~uart_rst & uart_done);
-    
+    assign rst_nu = rst_in | !uart_rst;
     cpuclk clock1(
         .clk_in1(sys_clk),
         .clk_out1(clock),
@@ -70,7 +70,7 @@ module top(
     
     IFetch Ifetch(
         .clock(clock),
-        .reset(rst_in),
+        .reset(rst_nu),
         .ALU_res(ALU_addr_res),
         .zero(zero),
         .read_data1(read_data1),
@@ -96,8 +96,6 @@ module top(
         .Opcode(instruction[31:26]),
         .Function_opcode(instruction[5:0]),
         .RegDST(RegDst),
-        .Function_opcode(instruction[5:0]),
-        .RegDST(RegDst),
         .Branch(Branch),
         .nBranch(nBranch),
         .MemRead(MemRead),
@@ -118,7 +116,7 @@ module top(
     
     decode32 decoder(
         .clock(clock),
-        .reset(rst_in),
+        .reset(rst_nu),
         .Instruction(instruction),
         .mem_data(reg_write_data),
         .ALU_result(ALU_result),
@@ -140,7 +138,7 @@ module top(
         .ioWrite(IOWrite),
         .addr_in(ALU_result),
         .addr_out(data_address),
-        .m_rdata(memData),
+        .m_rdata(MemData),
         .io_rdata_switch(switch_wdata),
         .io_rdata_board(key_wdata),
         .r_wdata(reg_write_data),
@@ -159,13 +157,13 @@ module top(
         .Function_opcode(instruction[5:0]),
         .Exe_opcode(instruction[31:26]),
         .ALUOp(ALUOp),
-        .Shamt(instrucion[10:6]),
+        .Shamt(instruction[10:6]),
         .Sftmd(Sftmd),
         .ALUSrc(ALUSrc),
         .I_format(I_format),
         .Jr(Jr),
         .Zero(zero),
-        .ALU_Result(ALU_reult),
+        .ALU_Result(ALU_result),
         .Addr_Result(ALU_addr_res),
         .PC_plus_4(branch_base_addr)
     );
@@ -195,7 +193,9 @@ module top(
         .uart_clk(uart_clk),
         .uart_write_en(uart_write_en & uart_addr[14]),
         .uart_addr(uart_addr[13:0]),
-        .uart_data(uart_data)
+        .uart_data(uart_data),
+        .uart_rst(uart_rst),
+        .uart_done(uart_done)
     );
 
 

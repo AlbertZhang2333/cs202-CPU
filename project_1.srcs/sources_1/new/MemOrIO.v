@@ -1,27 +1,27 @@
 `timescale 1ns / 1ps
 
-module MemOrIO(
-//Controller
-input           memRead, // read memory, from Controller
-input           memWrite, // write memory, from Controller
-input           ioRead, // read IO, from Controller
-input           ioWrite, // write IO, from Controller
-
-input   [31:0]  addr_in, // from alu_result in ALU
-output  [31:0]  addr_out, // address to Data-Memory
-
-input   [31:0]  m_rdata, // data read from Data-Memory
-input   [18:0]  io_rdata_switch, // data read from switch,19 bits
-input   [18:0]  io_rdata_board, // data read from board,19 bits
-output  [31:0]  r_wdata, // data to register
-input   [31:0]  r_rdata, // data read from register
-output  [31:0]  write_data, // data to memory or I/O（m_wdata, io_wdata�?
-output          LEDCtrl, // LED Chip Select
-output          SwitchCtrl, // Switch Chip Select
-output          SegCtrl,//segment
-output          BoardCtrl//keyboard
+module MemOrIO(memRead,memWrite, ioRead, ioWrite, addr_in, addr_out, 
+m_rdata,io_rdata_switch,io_rdata_board, r_wdata, r_rdata, write_data,LEDCtrl, SwitchCtrl, SegCtrl,BoardCtrl
 );
+//Controller
+input           memRead; // read memory, from Controller
+input           memWrite; // write memory, from Controller
+input           ioRead; // read IO, from Controller
+input           ioWrite; // write IO, from Controller
 
+input   [31:0]  addr_in; // from alu_result in ALU
+output  [31:0]  addr_out; // address to Data-Memory
+
+input   [31:0]  m_rdata; // data read from Data-Memory
+input   [18:0]  io_rdata_switch; // data read from switch,19 bits
+input   [18:0]  io_rdata_board; // data read from board,19 bits
+output  [31:0]  r_wdata; // data to register
+input   [31:0]  r_rdata; // data read from register
+output  [31:0]  write_data; // data to memory or I/O（m_wdata, io_wdata�?
+output          LEDCtrl; // LED Chip Select
+output          SwitchCtrl; // Switch Chip Select
+output          SegCtrl;//segment
+output          BoardCtrl;//keyboard
 wire    [18:0]  io_rdata;
 wire    [1:0]   low_addr;
 assign low_addr = addr_in[1:0];

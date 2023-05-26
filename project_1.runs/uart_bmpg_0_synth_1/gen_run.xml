@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="uart_bmpg_0_synth_1" LaunchPart="xc7a35tcsg324-1" LaunchTime="1684550057">
+<GenRun Id="uart_bmpg_0_synth_1" LaunchPart="xc7a100tfgg484-1" LaunchTime="1685034443">
   <File Type="PA-TCL" Name="uart_bmpg_0.tcl"/>
   <File Type="REPORTS-TCL" Name="uart_bmpg_0_reports.tcl"/>
   <File Type="RDS-RDS" Name="uart_bmpg_0.vds"/>

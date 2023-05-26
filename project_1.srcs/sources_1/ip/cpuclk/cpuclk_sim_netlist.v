@@ -3,8 +3,8 @@
 // Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
 // Date        : Sat May 20 11:10:24 2023
 // Host        : LAPTOP-6KGVJPCT running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode funcsim
-//               E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/cpuclk/cpuclk_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim -rename_top cpuclk -prefix
+//               cpuclk_ cpuclk_sim_netlist.v
 // Design      : cpuclk
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -31,7 +31,6 @@ module cpuclk
         .clk_out2(clk_out2));
 endmodule
 
-(* ORIG_REF_NAME = "cpuclk_clk_wiz" *) 
 module cpuclk_cpuclk_clk_wiz
    (clk_out1,
     clk_out2,

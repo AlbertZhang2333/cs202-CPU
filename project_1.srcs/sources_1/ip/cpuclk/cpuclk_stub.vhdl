@@ -3,8 +3,8 @@
 -- Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
 -- Date        : Sat May 20 11:10:24 2023
 -- Host        : LAPTOP-6KGVJPCT running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode synth_stub
---               E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/cpuclk/cpuclk_stub.vhdl
+-- Command     : write_vhdl -force -mode synth_stub -rename_top cpuclk -prefix
+--               cpuclk_ cpuclk_stub.vhdl
 -- Design      : cpuclk
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a35tcsg324-1

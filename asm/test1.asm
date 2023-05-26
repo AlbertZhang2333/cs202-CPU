@@ -1,14 +1,13 @@
 .data
 .text
-switch:
 
+switch:
 addi $t0, $zero, 0xFFFF
-addi $t1, $zero, 16
-sll $t0, $t0, $t1
-addi $t0, $t0, 0xC000//t0 IO基地址
-lw $t3, 0($t0) //t3 IO输入
+sll $t0, $t0, 16
+addi $t0, $t0, 0xC000 #t0 IO输入输出基地址
+lw $t3, 0($t0) #t3 IO输入
 addi $t1, $zero, 7
-and $t1, $t1, $t3//t1用例编号
+and $t1, $t1, $t3 #t1用例编号
 srl $t3, $t3, 3
 
 addi $t2, $zero, 0
@@ -30,17 +29,17 @@ beq $t2, $t1, case7
 j switch
 
 case0:
-
-andi $t4, $t3, 0xFF //t4 operand
+andi $t4, $t3, 0xFF #t4操作数
 addi $t5, $t4, -1
-and $t5, $t5, $t4 //$t5 v&(v - 1)
+and $t5, $t5, $t4 #$t5为零即正确
 slti $t5, $t5, 1
 sll $t4, $t4, 8
 or $t4, $t4, $t5
 sw $t4, 0($t0)
+j switch
 
-case1??
-andi $t4, $t3, 0xFF //t4??????
+case1:
+andi $t4, $t3, 0xFF #t4操作数
 andi $t5, $t4, 1
 sll $t4, $t4, 8
 or $t4, $t4, $t5
@@ -65,19 +64,16 @@ j switch
 case5:
 addi $s1, $zero, 0x80
 and $s2, $t4, $s1
-and $s3, $t5, $s1 //s2, s3????λ
-sltu $s0, $s3, $s2//????????
+and $s3, $t5, $s1 #s2, s3符号位
+slt $s0, $s3, $s2 #先比较正负,s0是1时，符合条件
 bne $s2, $s3, Exit5
 and $s4, $s2, $s3
 beq $zero, $s4, compare5
-add $s4, $zero, $t4
-add $t4, $zero, $t5
-add $t5, $zero, $s4
-addi $s1, $zero, 0xFF
-xor $t4, $t4, $s1
-xor $t5, $t5, $s1
+beq $t4, $t5, compare5
+slt $s0, $t5, $t4
+j Exit5
 compare5:
-sltu $s0, $t4, $t5
+slt $s0, $t4, $t5
 Exit5:
 sw $s0, 0($t0)
 j switch
@@ -88,12 +84,12 @@ sw $s1, 0($t0)
 j switch
 
 case7:
-andi $t4, $t3, 0xFF //t4 operand1
-sll $t3, $t3, 8
-andi $t5, $t3, 0xFF //t5 operand2
-sll $s0, $t4, 8
-or $s0, $s0, $t5
-sw $s0, 0($t0)
+andi $t4, $t3, 0xFF # t4 operand1
+srl $t3, $t3, 8
+andi $t5, $t3, 0xFF #t5 operand2
+sll $s7, $t4, 8
+or $s7, $s0, $t5
+sw $s7, 0($t7)
 
 
 
