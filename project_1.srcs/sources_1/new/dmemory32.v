@@ -32,11 +32,19 @@ module dmemory32(clock,memWrite,address,writeData,readData,kickOff,uart_clk,uart
     input uart_rst;
     input uart_done;
 wire clk;
-RAM data_memory(
+/* RAM data_memory(
     .clka(kickOff ? clk : uart_clk), 
     .wea(kickOff ? memWrite : uart_write_en), 
     .addra(kickOff ? address[15:2] : uart_addr),
     .dina(kickOff ? writeData : uart_data),
+    .douta(readData)
+    ); */
+
+RAM data_memory(
+    .clka(clk), 
+    .wea(memWrite), 
+    .addra(address[15:2]),
+    .dina(writeData),
     .douta(readData)
     );
 assign clk = !clock;

@@ -29,7 +29,9 @@ module top(
     output  [15:0]  led,
     output          tx,
     output          CPUMood,
-    output          UARTMood
+    output          UARTMood,
+        output  [7:0]   seg_out,
+        output  [7:0]   seg_en
     );
 
     wire            RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
@@ -140,7 +142,7 @@ module top(
         .memWrite(MemWrite),
         .ioRead(IORead),
         .ioWrite(IOWrite),
-        .addr_in(ALU_addr_res),
+        .addr_in(ALU_result),
         .addr_out(data_address),
         .m_rdata(MemData),
         .io_rdata_switch(switch_wdata),
@@ -204,6 +206,14 @@ module top(
         .uart_done(uart_done)
     );
 
+    segs seg(
+        .clk(sys_clk),
+        .rst(rst_nu),
+        .segCtrl(SegCtrl),
+        .data_in(Mem_write_data),
+        .seg_o_0(seg_out),
+        .seg_en(seg_en)
+    );
 
     uart_bmpg_0 uart(
             .upg_clk_i(uart_clk),

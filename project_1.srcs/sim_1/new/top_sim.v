@@ -25,7 +25,7 @@ module top_sim(    );
 reg                 clk,rst,spg,rx;
 wire                tx,cpu,uart;
 reg     [18:0]      sw;
-wire    [31:0]      led;
+wire    [15:0]      led;
 
 top u1(
     .sys_clk(clk),
@@ -44,7 +44,7 @@ initial begin
     rst = 1'b1;
     spg = 1'b0;
     rx = 1'b1;
-    sw = {2'b0,16'h0000};
+    sw = 19'h7F7E7;
     #5 rst = 1'b0;
 end
 

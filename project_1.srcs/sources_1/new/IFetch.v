@@ -27,7 +27,7 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
     input reset;
     input[31:0] ALU_res;//instruction address calculated by ALU. 
     input zero;
-    input read_data1; //read from register by decoder
+    input[31:0] read_data1; //read from register by decoder
     
     //from controller
     input Branch;
@@ -59,9 +59,8 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
     reg[31:0] pc, next_pc;
     //get next pc
     always @(*) begin
-        if(Jr == 1) 
+        if(Jr == 1'b1) 
         next_pc <= read_data1; //jr 
-         //Jump and Jal 
         else if(((Branch == 1) && (zero == 1'b1)) || ((nBranch == 1'b1) && (zero == 1'b0))) 
             next_pc <= ALU_res; 
         else next_pc <= pc + 4; 
@@ -81,6 +80,8 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
             syscall <= 1'b1;
         end */
         else begin
+            
+            //Jump and Jal 
             if ((Jmp == 1'b1) || (Jal == 1'b1)) 
             begin
                 link_addr <= next_pc;

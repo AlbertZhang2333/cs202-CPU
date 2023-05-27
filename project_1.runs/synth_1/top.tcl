@@ -16,7 +16,6 @@ proc create_report { reportName command } {
     send_msg_id runtcl-5 warning "$msg"
   }
 }
-set_param xicom.use_bs_reader 1
 create_project -in_memory -part xc7a100tfgg484-1
 
 set_param project.singleFileAddWarning.threshold 0
@@ -38,17 +37,16 @@ add_files E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs
 read_verilog -library xil_defaultlib {
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/IFetch.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/MemOrIO.v
+  E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/bin_to_hex.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/control32.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/decode32.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/dmemory32.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/executs32.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/leds.v
+  E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/segs.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/switches.v
   E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/top.v
 }
-read_ip -quiet E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/programrom/programrom.xci
-set_property used_in_implementation false [get_files -all e:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/programrom/programrom_ooc.xdc]
-
 read_ip -quiet E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/cpuclk_1/cpuclk.xci
 set_property used_in_implementation false [get_files -all e:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/cpuclk_1/cpuclk_board.xdc]
 set_property used_in_implementation false [get_files -all e:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/cpuclk_1/cpuclk.xdc]
@@ -58,6 +56,9 @@ read_ip -quiet E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1
 
 read_ip -quiet E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/RAM/RAM.xci
 set_property used_in_implementation false [get_files -all e:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/RAM/RAM_ooc.xdc]
+
+read_ip -quiet E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/programrom/programrom.xci
+set_property used_in_implementation false [get_files -all e:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/programrom/programrom_ooc.xdc]
 
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -70,8 +71,6 @@ foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
 read_xdc E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/constrs_1/new/cpu_constraint.xdc
 set_property used_in_implementation false [get_files E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/constrs_1/new/cpu_constraint.xdc]
 
-read_xdc dont_touch.xdc
-set_property used_in_implementation false [get_files dont_touch.xdc]
 
 synth_design -top top -part xc7a100tfgg484-1
 

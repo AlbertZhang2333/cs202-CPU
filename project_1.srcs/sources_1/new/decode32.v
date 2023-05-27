@@ -90,7 +90,7 @@ module decode32(
         else  */
         if(RegWrite == 1'b1)begin
              if(Jal == 1'b1)begin
-                     writeDst <= 5'b11111;//jal
+                writeDst <= 5'b11111;//jal
             end
              else if(RegDst==1'b1)begin
                  writeDst <= rd;
