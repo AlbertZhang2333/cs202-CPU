@@ -47,9 +47,9 @@ module IFetch(clock,reset, ALU_res,zero, read_data1, Branch, nBranch,
     output[31:0] Instruction;
     output[31:0] branch_base_addr;
     output reg[31:0] link_addr; //pc + 4
-    wire rom_clk = !clock;
+    //wire rom_clk = !clock;
     programrom instruction_memory(
-          .clka(kickOff ? rom_clk : uart_clk),
+          .clka(kickOff ? clock : uart_clk),
           .addra(kickOff ? pc[15:2] : uart_addr),
           .douta(Instruction),
           .dina(kickOff ? 32'h00000000 : uart_data),

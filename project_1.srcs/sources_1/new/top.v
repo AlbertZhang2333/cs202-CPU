@@ -26,10 +26,10 @@ module top(
     input   [18:0]  switch,
     input           start_pg,
     input           rx,
-    output  [18:0]  led,
+    output  [15:0]  led,
     output          tx,
-    output reg     CPUMood,
-    output reg     UARTMood
+    output          CPUMood,
+    output          UARTMood
     );
 
     wire            RegDst, RegWrite, MemRead, MemtoReg, MemWrite, ALUSrc, I_format, zero, Branch, nBranch, Jump, Jal, Jr, Sftmd, IORead, IOWrite;//control signal
@@ -54,7 +54,7 @@ module top(
 
     wire            uart_clk;
     reg             uart_rst, rx_reg, uart_write_en_reg;
-    wire            spg_bufg, uart_clk_o, uart_write_en, uart_done, kickOff;
+    wire            uart_clk_o, uart_write_en, uart_done, kickOff,spg_bufg;
     wire    [14:0]  uart_addr;
     wire    [31:0]  uart_data;
     wire    [18:0]  switch_wdata;
@@ -64,6 +64,8 @@ module top(
     wire            rst_nu;
     assign kickOff = uart_rst | (~uart_rst & uart_done);
     assign rst_nu = rst_in | !uart_rst;
+    assign CPUMood = kickOff;
+    assign UARTMood = ~kickOff;
     cpuclk clock1(
         .clk_in1(sys_clk),
         .clk_out1(clock),
@@ -170,8 +172,10 @@ module top(
         .PC_plus_4(branch_base_addr)
     );
 
+    wire LEDC = 1'b1;
+    wire[31:0] out1 = {Mem_write_data};
     leds LED(
-        .ledrst(rst_in),
+        .ledrst(rst_nu),
         .led_clk(clock),
         .ledcs(LEDCtrl),
         .ledwdata(Mem_write_data),
@@ -179,7 +183,7 @@ module top(
     );
 
     switches Switch(
-        .reset(rst_in),
+        .reset(rst_nu),
         .switchctrl(SwitchCtrl),
         .ioread_data_switch(switch),
         .ioread_data(switch_wdata)
@@ -213,12 +217,11 @@ module top(
             .upg_tx_o(tx)
         );
         
-    reg spg_bufg = 0;
-    always @(start_pg) begin
+    /* always @(start_pg) begin
         if (rst_in) spg_bufg <= 0;
         else spg_bufg <= ~spg_bufg;
-    end
-        //BUFG U1(.I(start_pg), .O(spg_bufg));
+    end */
+        BUFG U1(.I(start_pg), .O(spg_bufg));
          always@(posedge sys_clk) begin
             if(spg_bufg) uart_rst = 0;
             if(rst_in) uart_rst = 1;
@@ -231,17 +234,16 @@ module top(
                 if (uart_write_en) uart_write_en_reg = 1;
             end */
         end
-       always @(posedge sys_clk) begin
-        if(spg_bufg) begin
-            CPUMood <= 1'b0;
-            UARTMood <= 1'b1;
-        end
-        if(rst_in) begin
-            CPUMood <= 1'b1;
-            UARTMood <= 1'b0;
-  
-        end
+    //    always @(posedge sys_clk) begin
+    //     if(spg_bufg) begin
+    //         CPUMood <= 1'b0;
+    //         UARTMood <= 1'b1;
+    //     end
+    //     if(rst_in) begin
+    //         CPUMood <= 1'b1;
+    //         UARTMood <= 1'b0;
+    //     end
         
-    end
+    // end
           
 endmodule

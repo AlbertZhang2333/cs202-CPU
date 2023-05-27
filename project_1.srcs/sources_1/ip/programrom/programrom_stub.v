@@ -1,10 +1,10 @@
 // Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
-// Date        : Fri May 26 01:13:52 2023
+// Date        : Sat May 27 14:42:27 2023
 // Host        : LAPTOP-6KGVJPCT running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               e:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/ip/programrom/programrom_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top programrom -prefix
+//               programrom_ programrom_stub.v
 // Design      : programrom
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tfgg484-1

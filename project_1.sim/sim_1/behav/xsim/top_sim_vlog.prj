@@ -1,0 +1,25 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../project_1.srcs/sources_1/ip/cpuclk_1" \
+"../../../../project_1.srcs/sources_1/ip/uart_bmpg_0/uart_bmpg.v" \
+"../../../../project_1.srcs/sources_1/ip/uart_bmpg_0/upg.v" \
+"../../../../project_1.srcs/sources_1/ip/uart_bmpg_0/sim/uart_bmpg_0.v" \
+"../../../../project_1.srcs/sources_1/ip/RAM/sim/RAM.v" \
+"../../../../project_1.srcs/sources_1/ip/programrom/sim/programrom.v" \
+"../../../../project_1.srcs/sources_1/ip/cpuclk_1/cpuclk_clk_wiz.v" \
+"../../../../project_1.srcs/sources_1/ip/cpuclk_1/cpuclk.v" \
+"../../../../project_1.srcs/sources_1/new/IFetch.v" \
+"../../../../project_1.srcs/sources_1/new/MemOrIO.v" \
+"../../../../project_1.srcs/sources_1/new/control32.v" \
+"../../../../project_1.srcs/sources_1/new/decode32.v" \
+"../../../../project_1.srcs/sources_1/new/dmemory32.v" \
+"../../../../project_1.srcs/sources_1/new/executs32.v" \
+"../../../../project_1.srcs/sources_1/new/leds.v" \
+"../../../../project_1.srcs/sources_1/new/switches.v" \
+"../../../../project_1.srcs/sources_1/new/top.v" \
+"../../../../../../simulation/cs202-CPU/project_1.srcs/sim_1/new/top_sim.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

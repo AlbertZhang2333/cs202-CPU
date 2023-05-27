@@ -7,19 +7,17 @@ module leds (
     input			ledcs,		// 1 means the leds are selected as output
 //    input	[1:0]	ledaddr,	// 2'b01 means updata the LOW 16bits of ledout, 2'b10 means updata the HIGH 8 bits of ledout
     input	[31:0]	ledwdata,	// the data (from register/memorio)  waiting for to be writen to the leds of the board
-    output	[18:0]	ledout		// the data writen to the leds of the board
+    output reg	[15:0]	ledout		// the data writen to the leds of the board
 );
-  
-    reg [18:0] ledout;
     
-    always @ (posedge led_clk or posedge ledrst or negedge ledcs) begin
+    always @* begin
         if (ledrst)
-            ledout <= {2'b00,16'h0000};
+            ledout <= 16'h0;
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		else if (ledcs) 
-            ledout <= ledwdata[18:0];
+            ledout <= ledwdata[15:0];
         else 
-            ledout <= {2'b00,16'h0000};
+            ledout <= ledout;
     end
 	
 endmodule
