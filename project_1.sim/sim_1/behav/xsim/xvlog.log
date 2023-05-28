@@ -16,6 +16,8 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/pr
 INFO: [VRFC 10-311] analyzing module IFetch
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/MemOrIO.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module MemOrIO
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/bin_to_hex.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bin_to_hex
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/control32.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module control32
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/decode32.v" into library xil_defaultlib
@@ -26,9 +28,11 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/pr
 INFO: [VRFC 10-311] analyzing module executs32
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/leds.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module leds
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/segs.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module segs
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/switches.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module switches
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sources_1/new/top.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module top
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/simulation/cs202-CPU/project_1.srcs/sim_1/new/top_sim.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Learning/ComputerOrganization/project/code/cs202-CPU/project_1.srcs/sim_1/new/top_sim.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module top_sim

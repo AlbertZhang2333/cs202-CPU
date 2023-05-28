@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top_sim(    );
+module top_sim();
 
 reg                 clk,rst,spg,rx;
 wire                tx,cpu,uart;
@@ -44,7 +44,7 @@ initial begin
     rst = 1'b1;
     spg = 1'b0;
     rx = 1'b1;
-    sw = 19'h7F7E7;
+    sw = 19'h02017;
     #5 rst = 1'b0;
 end
 
